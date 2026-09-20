@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#fff9f8"><title>Mytone — Personal Color</title>
+  <!-- Base fonts; RDTakowasabi is used automatically when installed locally. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="shell">
+    <!-- App name, logo and light/dark appearance control. -->
+    <nav class="topbar">
+      <a class="brand" href="#" aria-label="Mytone home"><i class="brand-mark"><b></b><b></b><b></b></i>Mytone</a>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="เปิดโหมดมืด" aria-pressed="false"><span class="theme-sun">☀</span><span class="theme-moon">☾</span></button>
+    </nav>
+
+    <!-- Short introduction to the Personal Color flow. -->
+    <section class="hero">
+      <p class="eyebrow">FIND YOUR BEST TONES</p>
+      <h1>ค้นพบสีที่<br><span>ทำให้คุณดูดีขึ้น</span></h1>
+      <p class="intro">ถ่ายหรือเลือกรูปหน้าตรงในแสงธรรมชาติ<br class="desktop">เพื่อให้ผลลัพธ์แม่นยำและเป็นคุณที่สุด</p>
+    </section>
+
+    <!-- Upload panel and profile analysis panel. -->
+    <section class="studio" id="studio">
+      <div class="progress"><span class="active">01 <b>รูปของคุณ</b></span><i></i><span>02 <b>วิเคราะห์สี</b></span><i></i><span>03 <b>ผลลัพธ์</b></span></div>
+      <div class="studio-grid">
+        <div class="camera-panel">
+          <div class="upload-zone" id="uploadZone">
+            <img id="photoPreview" alt="รูปตัวอย่างที่อัปโหลด">
+            <div class="upload-placeholder" id="placeholder">
+              <div class="camera-icon">◌</div><h3>เพิ่มรูปของคุณ</h3>
+              <p>ภาพหน้าตรง แสงธรรมชาติ<br>จะให้ผลลัพธ์ที่แม่นยำกว่า</p>
+              <div class="upload-actions"><label for="cameraInput">▣ ถ่ายรูป</label><label class="secondary" for="fileInput">▧ เลือกรูป</label></div>
+              <input id="cameraInput" type="file" accept="image/*" capture="user"><input id="fileInput" type="file" accept="image/*">
+            </div>
+            <button class="replace" id="replaceBtn" type="button">เปลี่ยนรูป</button>
+          </div>
+          <p class="privacy">✦ รูปภาพของคุณจะไม่ถูกบันทึกไว้</p>
+        </div>
+        <div class="analysis-panel">
+          <div class="panel-head"><span>YOUR COLOR PROFILE</span><span class="scan-dot">● READY</span></div>
+          <div class="face-card"><div class="orbit orbit-a"></div><div class="orbit orbit-b"></div><div class="face">◖</div><div class="scan-line"></div><p id="statusText">รอรูปภาพเพื่อเริ่มการวิเคราะห์</p></div>
+          <div class="metrics"><div><span>SKIN UNDERTONE</span><strong id="undertone">—</strong></div><div><span>CONTRAST LEVEL</span><strong id="contrast">—</strong></div><div><span>COLOR SEASON</span><strong id="season">—</strong></div></div>
+          <button class="analyze" id="analyzeBtn" type="button" disabled>วิเคราะห์ Personal Color <span>↗</span></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- This result section appears after analysis. -->
+    <section class="result hidden" id="result">
+      <div class="result-title"><p class="eyebrow">YOUR PERSONAL PALETTE</p><h2>คุณคือ <em id="seasonName">Soft Autumn</em></h2><p id="resultDescription">โทนอุ่น นุ่มนวล และเป็นธรรมชาติ</p></div>
+      <div class="palette-layout">
+        <article class="palette-card good"><div class="card-label">✓ สีที่เหมาะกับคุณ</div><div class="swatches" id="goodSwatches"></div><p id="goodLabel">Earthy & warm tones</p></article>
+        <article class="palette-card avoid"><div class="card-label">× สีที่อาจไม่เข้ากับคุณ</div><div class="swatches" id="avoidSwatches"></div><p id="avoidLabel">Icy & vivid tones</p></article>
+      </div>
+      <p class="result-note">ผลลัพธ์เป็นคำแนะนำเบื้องต้นจากรูปภาพ อาจเปลี่ยนแปลงได้ตามแสง กล้อง และการแต่งหน้า</p>
+      <button class="restart" id="restartBtn" type="button">↺ วิเคราะห์รูปใหม่</button>
+    </section>
+    <!-- Simple application footer. -->
+    <footer><span>MYTONE © 2026</span><span>COLOR WITH CONFIDENCE</span></footer>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
