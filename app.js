@@ -35,18 +35,23 @@ async function loadPhoto(file) {
   statusText.textContent = isHeic ? "กำลังแปลงรูป HEIC/HEIF..." : "กำลังเปิดรูปภาพ...";
   let previewFile = file;
 
-  try {
-    /*
-     * Most browsers cannot preview HEIC/HEIF directly. Convert only those
-     * files locally; the original photo is never uploaded to a server.
-     */
-    if (isHeic) {
-      previewFile = await heic2any({ blob: file, toType: "image/jpeg", quality: 0.9 });
-      if (Array.isArray(previewFile)) [previewFile] = previewFile;
+  /*
+   * Newer iPhone browsers can decode HEIC themselves. Prefer that native path
+   * first; if it is unavailable, convert a local copy to JPEG with heic2any.
+   */
+  if (isHeic) {
+    try {
+      await canBrowserDecode(file);
+    } catch {
+      try {
+        if (typeof heic2any !== "function") throw new Error("Converter unavailable");
+        previewFile = await heic2any({ blob: file, toType: "image/jpeg", quality: 0.9 });
+        if (Array.isArray(previewFile)) [previewFile] = previewFile;
+      } catch {
+        statusText.textContent = "เปิดรูป HEIC/HEIF ไม่สำเร็จ ลองตั้งค่ากล้องเป็น Most Compatible หรือเลือกรูป JPG";
+        return;
+      }
     }
-  } catch (error) {
-    statusText.textContent = "แปลงรูป HEIC/HEIF ไม่สำเร็จ ลองเลือกรูป JPG หรือ PNG";
-    return;
   }
 
   const reader = new FileReader();
@@ -76,6 +81,26 @@ async function loadPhoto(file) {
     statusText.textContent = "อ่านไฟล์รูปภาพไม่สำเร็จ กรุณาลองอีกครั้ง";
   };
   reader.readAsDataURL(previewFile);
+}
+
+/*
+ * Checks whether this browser can natively render an HEIC/HEIF file.
+ * The temporary URL is immediately released and no image leaves the device.
+ */
+function canBrowserDecode(file) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    const url = URL.createObjectURL(file);
+    image.onload = () => {
+      URL.revokeObjectURL(url);
+      resolve();
+    };
+    image.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error("Native HEIC decoding unavailable"));
+    };
+    image.src = url;
+  });
 }
 
 /* Creates the small colour swatches in a palette result card. */
