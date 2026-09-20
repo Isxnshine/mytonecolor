@@ -18,16 +18,46 @@ const profiles = [
 ];
 let hasPhoto = false;
 
-/* Loads a picked photo into the preview, then allows colour analysis. */
+/*
+ * Loads a picked photo into the preview, then allows colour analysis.
+ * FileReader is used instead of a temporary object URL because it is more
+ * reliable with photos selected from Android and iOS galleries.
+ */
 function loadPhoto(file) {
   if (!file) return;
-  preview.src = URL.createObjectURL(file);
-  preview.style.display = "block";
-  placeholder.style.display = "none";
-  replaceBtn.style.display = "block";
-  analyzeBtn.disabled = false;
-  hasPhoto = true;
-  statusText.textContent = "พร้อมสแกนโทนสีผิวของคุณ";
+  if (!file.type.startsWith("image/")) {
+    statusText.textContent = "กรุณาเลือกไฟล์รูปภาพ";
+    return;
+  }
+
+  statusText.textContent = "กำลังเปิดรูปภาพ...";
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    preview.onload = () => {
+      preview.style.display = "block";
+      placeholder.style.display = "none";
+      replaceBtn.style.display = "block";
+      analyzeBtn.disabled = false;
+      hasPhoto = true;
+      statusText.textContent = "พร้อมสแกนโทนสีผิวของคุณ";
+    };
+    preview.onerror = () => {
+      preview.removeAttribute("src");
+      preview.style.display = "none";
+      placeholder.style.display = "block";
+      replaceBtn.style.display = "none";
+      analyzeBtn.disabled = true;
+      hasPhoto = false;
+      statusText.textContent = "ไม่สามารถเปิดรูปนี้ได้ ลองเลือกรูป JPG หรือ PNG";
+    };
+    preview.src = reader.result;
+  };
+
+  reader.onerror = () => {
+    statusText.textContent = "อ่านไฟล์รูปภาพไม่สำเร็จ กรุณาลองอีกครั้ง";
+  };
+  reader.readAsDataURL(file);
 }
 
 /* Creates the small colour swatches in a palette result card. */
