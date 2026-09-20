@@ -23,14 +23,32 @@ let hasPhoto = false;
  * FileReader is used instead of a temporary object URL because it is more
  * reliable with photos selected from Android and iOS galleries.
  */
-function loadPhoto(file) {
+async function loadPhoto(file) {
   if (!file) return;
-  if (!file.type.startsWith("image/")) {
+  const isHeic = /image\/hei[cf]/i.test(file.type) || /\.(heic|heif)$/i.test(file.name);
+
+  if (!file.type.startsWith("image/") && !isHeic) {
     statusText.textContent = "กรุณาเลือกไฟล์รูปภาพ";
     return;
   }
 
-  statusText.textContent = "กำลังเปิดรูปภาพ...";
+  statusText.textContent = isHeic ? "กำลังแปลงรูป HEIC/HEIF..." : "กำลังเปิดรูปภาพ...";
+  let previewFile = file;
+
+  try {
+    /*
+     * Most browsers cannot preview HEIC/HEIF directly. Convert only those
+     * files locally; the original photo is never uploaded to a server.
+     */
+    if (isHeic) {
+      previewFile = await heic2any({ blob: file, toType: "image/jpeg", quality: 0.9 });
+      if (Array.isArray(previewFile)) [previewFile] = previewFile;
+    }
+  } catch (error) {
+    statusText.textContent = "แปลงรูป HEIC/HEIF ไม่สำเร็จ ลองเลือกรูป JPG หรือ PNG";
+    return;
+  }
+
   const reader = new FileReader();
 
   reader.onload = () => {
@@ -57,7 +75,7 @@ function loadPhoto(file) {
   reader.onerror = () => {
     statusText.textContent = "อ่านไฟล์รูปภาพไม่สำเร็จ กรุณาลองอีกครั้ง";
   };
-  reader.readAsDataURL(file);
+  reader.readAsDataURL(previewFile);
 }
 
 /* Creates the small colour swatches in a palette result card. */

@@ -35,7 +35,7 @@
               <div class="camera-icon">◌</div><h3>เพิ่มรูปของคุณ</h3>
               <p>ภาพหน้าตรง แสงธรรมชาติ<br>จะให้ผลลัพธ์ที่แม่นยำกว่า</p>
               <div class="upload-actions"><label for="cameraInput">▣ ถ่ายรูป</label><label class="secondary" for="fileInput">▧ เลือกรูป</label></div>
-              <input id="cameraInput" type="file" accept="image/*" capture="user"><input id="fileInput" type="file" accept="image/*">
+              <input id="cameraInput" type="file" accept="image/*,.heic,.heif" capture="user"><input id="fileInput" type="file" accept="image/*,.heic,.heif">
             </div>
             <button class="replace" id="replaceBtn" type="button">เปลี่ยนรูป</button>
           </div>
@@ -63,6 +63,8 @@
     <!-- Simple application footer. -->
     <footer><span>MYTONE © 2026</span><span>COLOR WITH CONFIDENCE</span></footer>
   </main>
+  <!-- Converts HEIC/HEIF photos locally in the browser before previewing. -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/heic2any/0.0.4/heic2any.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
